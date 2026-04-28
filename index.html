@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ReliefLink-AI-Powered NGO and Volunteer Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+  :root {
+    --bg: #050d1a;
+    --bg2: #071122;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --glass: rgba(10,30,60,0.55);
+    --glass-border: rgba(80,160,255,0.18);
+    --blue: #1a6cff;
+    --blue-light: #4d9fff;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.15);
+    --red: #ff4b6e;
+    --white: #f0f6ff;
+    --muted: #7a9abf;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw;
+    height: 68px;
+    background: rgba(5,13,26,0.75);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s;
+  }
+  nav.scrolled { background: rgba(5,13,26,0.95); }
+  .nav-logo {
+    font-family: var(--font-head); font-size: 1.4rem; font-weight: 800;
+    display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--white);
+  }
+  .nav-logo span { color: var(--green); }
+  .logo-icon {
+    width: 34px; height: 34px; background: linear-gradient(135deg,var(--blue),var(--green));
+    border-radius: 9px; display: grid; place-items: center; font-size: 0.9rem;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn {
+    padding: 9px 20px; border-radius: 8px; font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.25s; border: none;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 7px;
+  }
+  .btn-ghost {
+    background: transparent; color: var(--white);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-ghost:hover { border-color: var(--blue-light); color: var(--blue-light); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue), #0050cc);
+    color: #fff; box-shadow: 0 4px 18px rgba(26,108,255,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,108,255,0.5); }
+  .btn-green {
+    background: linear-gradient(135deg, var(--green), #00b882);
+    color: #050d1a; font-weight: 700; box-shadow: 0 4px 18px rgba(0,229,160,0.3);
+  }
+  .btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,229,160,0.45); }
+  .btn-lg { padding: 14px 30px; font-size: 1rem; border-radius: 10px; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
+  .hamburger span { width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+
+  /* ── HERO ── */
+  #home {
+    min-height: 100vh;
+    padding: 120px 5vw 80px;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(26,108,255,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(0,229,160,0.08) 0%, transparent 70%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; width: 100%;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3);
+    color: var(--green); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem;
+    font-weight: 600; margin-bottom: 1.4rem; letter-spacing: 0.5px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .badge-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+  h1 {
+    font-family: var(--font-head); font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+    font-weight: 800; line-height: 1.1; margin-bottom: 1.2rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  h1 .accent { color: var(--green); }
+  h1 .accent2 { color: var(--blue-light); }
+  .hero-sub {
+    color: var(--muted); font-size: 1.1rem; max-width: 520px;
+    margin-bottom: 2rem; line-height: 1.7; font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+  .hero-stats {
+    display: flex; gap: 2rem; margin-top: 3rem;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .hero-stat-val {
+    font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; color: var(--white);
+  }
+  .hero-stat-lab { font-size: 0.78rem; color: var(--muted); font-weight: 400; margin-top: 2px; }
+
+  /* ── DASHBOARD MOCKUP ── */
+  .hero-mockup {
+    position: relative; animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .mockup-card {
+    background: var(--glass); backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border); border-radius: 18px;
+    padding: 22px; position: relative; overflow: hidden;
+  }
+  .mockup-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .mockup-title {
+    font-family: var(--font-head); font-size: 0.9rem; font-weight: 700; color: var(--white);
+  }
+  .mockup-status {
+    display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--green);
+    background: var(--green-dim); padding: 4px 10px; border-radius: 20px;
+  }
+  /* Fake map */
+  .fake-map {
+    background: linear-gradient(135deg, #0a1e38 0%, #0d2850 100%);
+    border-radius: 12px; height: 170px; position: relative; overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .map-grid-lines {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(26,108,255,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,108,255,0.07) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .map-roads {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(-30deg, transparent, transparent 28px, rgba(26,108,255,0.06) 28px, rgba(26,108,255,0.06) 30px);
+  }
+  .map-pin {
+    position: absolute; width: 28px; height: 28px; transform: translate(-50%,-100%);
+    display: flex; flex-direction: column; align-items: center; animation: pinBounce 2s ease-in-out infinite;
+  }
+  @keyframes pinBounce { 0%,100%{transform:translate(-50%,-100%)} 50%{transform:translate(-50%,-110%)} }
+  .pin-head {
+    width: 18px; height: 18px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+    display: grid; place-items: center; font-size: 7px;
+  }
+  .pin-red .pin-head { background: var(--red); box-shadow: 0 0 10px rgba(255,75,110,0.7); }
+  .pin-green .pin-head { background: var(--green); box-shadow: 0 0 10px rgba(0,229,160,0.7); }
+  .pin-tail { width: 2px; height: 8px; }
+  .pin-red .pin-tail { background: var(--red); }
+  .pin-green .pin-tail { background: var(--green); }
+  .vol-dot {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 8px rgba(0,229,160,0.8);
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .vol-dot::after {
+    content:''; position:absolute; inset:-4px; border-radius:50%;
+    border: 1px solid rgba(0,229,160,0.3); animation: ripple 2s infinite;
+  }
+  @keyframes ripple { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(2.2);opacity:0} }
+  .map-legend {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(5,13,26,0.7); backdrop-filter: blur(6px);
+    border-radius: 8px; padding: 8px 12px; font-size: 0.7rem;
+  }
+  .legend-row { display: flex; align-items: center; gap: 6px; color: var(--muted); margin-bottom: 3px; }
+  .legend-row:last-child { margin-bottom: 0; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Volunteer cards */
+  .vol-cards { display: flex; flex-direction: column; gap: 8px; }
+  .vol-card {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+  .vol-card:hover { border-color: rgba(0,229,160,0.3); }
+  .vol-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 0.85rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .vol-info { flex: 1; }
+  .vol-name { font-size: 0.82rem; font-weight: 600; }
+  .vol-skill { font-size: 0.72rem; color: var(--muted); }
+  .vol-dist { font-size: 0.72rem; color: var(--green); font-weight: 600; }
+  .trust-bar {
+    width: 50px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;
+  }
+  .trust-fill { height: 100%; background: var(--green); border-radius: 2px; }
+
+  /* floating cards */
+  .float-badge {
+    position: absolute; background: var(--glass); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px 14px;
+    font-size: 0.76rem; font-weight: 600; white-space: nowrap;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .float-badge.top-right { top: -18px; right: -18px; color: var(--green); }
+  .float-badge.bot-left { bottom: -18px; left: -10px; color: var(--blue-light); animation-delay: 1s; }
+  .float-icon { display: inline-flex; margin-right: 5px; }
+
+  /* ── SECTIONS ── */
+  section { padding: 100px 5vw; position: relative; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--green); font-size: 0.78rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .section-label::before { content:''; width:24px; height:2px; background:var(--green); border-radius:1px; }
+  h2 {
+    font-family: var(--font-head); font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800; line-height: 1.2; margin-bottom: 1rem;
+  }
+  .section-sub { color: var(--muted); font-size: 1.05rem; max-width: 580px; font-weight: 300; }
+  .section-head { margin-bottom: 3.5rem; }
+  .center-head { text-align: center; }
+  .center-head .section-label { justify-content: center; }
+  .center-head .section-label::before { display: none; }
+  .center-head .section-label::after { content:''; width:24px; height:2px; background:var(--green); border-radius:1px; }
+  .center-head .section-sub { margin: 0 auto; }
+
+  /* ── FEATURES ── */
+  #features { background: var(--bg2); }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
+  }
+  .feat-card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 28px; position: relative; overflow: hidden;
+    transition: all 0.3s; cursor: default;
+  }
+  .feat-card::before {
+    content:''; position:absolute; inset:0; border-radius:16px;
+    background: linear-gradient(135deg, rgba(26,108,255,0.05), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feat-card:hover { transform: translateY(-4px); border-color: rgba(26,108,255,0.25); }
+  .feat-card:hover::before { opacity: 1; }
+  .feat-icon {
+    width: 52px; height: 52px; border-radius: 14px; margin-bottom: 18px;
+    display: grid; place-items: center; font-size: 1.3rem;
+  }
+  .feat-card h3 { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+  .feat-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+  .feat-tag {
+    display: inline-flex; margin-top: 14px; padding: 4px 10px;
+    border-radius: 6px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+  .steps::before {
+    content: '';
+    position: absolute; top: 60px; left: 12.5%; right: 12.5%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), var(--green), transparent);
+  }
+  .step { text-align: center; padding: 0 20px; }
+  .step-num {
+    width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 20px;
+    display: grid; place-items: center; font-family: var(--font-head); font-weight: 800; font-size: 1.2rem;
+    border: 2px solid var(--blue); color: var(--blue-light);
+    background: rgba(26,108,255,0.1); position: relative; z-index: 1;
+    transition: all 0.3s;
+  }
+  .step:hover .step-num { background: var(--blue); color: #fff; transform: scale(1.1); }
+  .step h3 { font-family: var(--font-head); font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+  .step p { color: var(--muted); font-size: 0.84rem; line-height: 1.6; }
+  .step-icon { font-size: 1.5rem; margin-bottom: 12px; }
+
+  /* ── DASHBOARD PREVIEW ── */
+  #dashboard { background: var(--bg2); }
+  .dash-split { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; align-items: start; }
+  .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .dash-card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 20px;
+    transition: all 0.3s;
+  }
+  .dash-card:hover { border-color: rgba(26,108,255,0.3); transform: translateY(-2px); }
+  .dash-card-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .dash-card-val { font-family: var(--font-head); font-size: 1.8rem; font-weight: 800; }
+  .dash-card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .dash-card-icon { font-size: 1.2rem; margin-bottom: 10px; }
+  .dash-task-list { display: flex; flex-direction: column; gap: 10px; }
+  .dash-task {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 10px; padding: 12px 16px;
+  }
+  .task-urgency {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .task-info { flex: 1; }
+  .task-name { font-size: 0.85rem; font-weight: 600; }
+  .task-loc { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+  .task-badge {
+    font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 5px;
+  }
+
+  /* Mobile UI */
+  .mobile-ui {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: 30px; padding: 18px; max-width: 260px; margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .mobile-notch {
+    width: 80px; height: 22px; background: rgba(0,0,0,0.5); border-radius: 11px;
+    margin: 0 auto 18px;
+  }
+  .mobile-header { text-align: center; margin-bottom: 16px; }
+  .mobile-header-title { font-family: var(--font-head); font-size: 0.95rem; font-weight: 700; }
+  .mobile-tasks { display: flex; flex-direction: column; gap: 8px; }
+  .mobile-task {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 12px;
+  }
+  .mobile-task-title { font-size: 0.78rem; font-weight: 600; margin-bottom: 4px; }
+  .mobile-task-meta { display: flex; justify-content: space-between; align-items: center; }
+  .mobile-task-dist { font-size: 0.7rem; color: var(--muted); }
+  .mobile-accept {
+    font-size: 0.7rem; font-weight: 700; padding: 4px 10px;
+    background: var(--green); color: #050d1a; border-radius: 6px; border: none;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .mobile-accept:hover { opacity: 0.8; }
+  .mobile-bottom {
+    display: flex; justify-content: space-around; margin-top: 20px;
+    padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .mobile-nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 0.65rem; color: var(--muted); cursor: pointer; transition: color 0.2s;
+  }
+  .mobile-nav-item.active { color: var(--green); }
+  .mobile-nav-item i { font-size: 1rem; }
+
+  /* ── IMPACT ── */
+  .impact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .impact-card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 30px; text-align: center;
+    position: relative; overflow: hidden; transition: all 0.3s;
+  }
+  .impact-card:hover { transform: translateY(-4px); border-color: rgba(0,229,160,0.3); }
+  .impact-card::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, var(--blue), var(--green));
+    transform: scaleX(0); transition: transform 0.3s;
+  }
+  .impact-card:hover::after { transform: scaleX(1); }
+  .impact-num {
+    font-family: var(--font-head); font-size: 2.6rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--white), var(--green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .impact-label { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+  .impact-icon { font-size: 2rem; margin-bottom: 12px; }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--bg2); }
+  .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .test-card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 18px; padding: 32px; position: relative;
+    transition: all 0.3s;
+  }
+  .test-card:hover { border-color: rgba(26,108,255,0.25); transform: translateY(-3px); }
+  .test-quote { font-size: 3rem; color: var(--blue-light); opacity: 0.4; line-height: 1; margin-bottom: 12px; }
+  .test-text { color: var(--muted); font-size: 0.95rem; line-height: 1.8; font-style: italic; margin-bottom: 24px; font-weight: 300; }
+  .test-author { display: flex; align-items: center; gap: 14px; }
+  .test-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 700; font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .test-name { font-weight: 700; font-size: 0.92rem; }
+  .test-role { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .test-stars { color: #f59e0b; font-size: 0.8rem; margin-bottom: 3px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg2); border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 60px 5vw 30px;
+  }
+  .footer-grid { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 50px; }
+  .footer-brand p { color: var(--muted); font-size: 0.88rem; margin: 14px 0 20px; line-height: 1.7; max-width: 280px; }
+  .footer-social { display: flex; gap: 10px; }
+  .social-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    display: grid; place-items: center; color: var(--muted); font-size: 0.9rem;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .social-icon:hover { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .footer-col h4 { font-family: var(--font-head); font-size: 0.9rem; font-weight: 700; margin-bottom: 16px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a { text-decoration: none; color: var(--muted); font-size: 0.86rem; transition: color 0.2s; }
+  .footer-col ul a:hover { color: var(--white); }
+  .footer-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; gap: 12px;
+  }
+  .footer-team { display: flex; align-items: center; gap: 8px; }
+  .team-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .team-pill {
+    background: rgba(26,108,255,0.15); border: 1px solid rgba(26,108,255,0.25);
+    color: var(--blue-light); padding: 3px 10px; border-radius: 5px; font-size: 0.75rem;
+  }
+
+  /* ── MODAL / LOGIN ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(5,13,26,0.85); backdrop-filter: blur(10px);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #0a1525; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 40px; width: 100%; max-width: 440px;
+    position: relative; animation: modalIn 0.3s ease;
+  }
+  @keyframes modalIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
+    border-radius: 50%; background: rgba(255,255,255,0.07); border: none;
+    color: var(--muted); cursor: pointer; display: grid; place-items: center;
+    font-size: 0.9rem; transition: all 0.2s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.12); color: var(--white); }
+  .modal h3 { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+  .modal-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 28px; }
+  .modal-tabs { display: flex; gap: 4px; background: rgba(255,255,255,0.04); border-radius: 10px; padding: 4px; margin-bottom: 26px; }
+  .modal-tab {
+    flex: 1; padding: 9px; text-align: center; border-radius: 7px; cursor: pointer;
+    font-size: 0.85rem; font-weight: 600; transition: all 0.2s; border: none;
+    background: transparent; color: var(--muted);
+  }
+  .modal-tab.active { background: var(--blue); color: #fff; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  .form-group input, .form-group select {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 9px; padding: 12px 14px; color: var(--white); font-family: var(--font-body);
+    font-size: 0.9rem; transition: border-color 0.2s; outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--blue-light); }
+  .form-group select option { background: #0a1525; }
+  .form-submit { width: 100%; padding: 13px; margin-top: 8px; }
+  .form-footer { text-align: center; font-size: 0.82rem; color: var(--muted); margin-top: 16px; }
+  .form-footer a { color: var(--blue-light); text-decoration: none; }
+
+  /* ── NGO DASHBOARD PAGE ── */
+  .page { display: none; }
+  .page.active { display: block; }
+  .dash-page { min-height: 100vh; padding: 90px 5vw 50px; }
+  .dash-page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+  .dash-page-title { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; }
+  .dash-page-sub { color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-mini {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 20px; display: flex; align-items: center; gap: 14px;
+  }
+  .stat-mini-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 1.1rem; flex-shrink: 0;
+  }
+  .stat-mini-val { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; }
+  .stat-mini-lab { font-size: 0.75rem; color: var(--muted); }
+  .dash-two-col { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .dash-panel {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 22px;
+  }
+  .dash-panel h4 { font-family: var(--font-head); font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .panel-action { font-size: 0.75rem; color: var(--blue-light); cursor: pointer; font-weight: 500; background: none; border: none; }
+  .task-row {
+    display: flex; align-items: center; gap: 12px; padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .task-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .task-row-icon { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; flex-shrink: 0; }
+  .task-row-info { flex: 1; }
+  .task-row-name { font-size: 0.84rem; font-weight: 600; }
+  .task-row-meta { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
+  .status-pill {
+    font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 5px;
+  }
+  .status-urgent { background: rgba(255,75,110,0.15); color: var(--red); }
+  .status-open { background: rgba(26,108,255,0.15); color: var(--blue-light); }
+  .status-done { background: rgba(0,229,160,0.15); color: var(--green); }
+
+  /* ── ANALYTICS PAGE ── */
+  .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; padding-top: 10px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .bar { border-radius: 4px 4px 0 0; transition: height 0.5s ease; min-height: 4px; }
+  .bar-label { font-size: 0.68rem; color: var(--muted); }
+  .donut-wrap { display: flex; align-items: center; gap: 16px; }
+  .donut-svg { width: 80px; height: 80px; flex-shrink: 0; }
+  .donut-legend { display: flex; flex-direction: column; gap: 6px; }
+  .donut-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--muted); }
+  .donut-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-mockup { max-width: 500px; margin: 0 auto; }
+    .steps { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .steps::before { display: none; }
+    .dash-split { grid-template-columns: 1fr; }
+    .impact-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .dash-two-col { grid-template-columns: 1fr; }
+    .analytics-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .nav-links, .nav-actions { display: none; }
+    .hamburger { display: flex; }
+    nav.menu-open .nav-links {
+      display: flex; flex-direction: column; position: absolute; top: 68px; left: 0; right: 0;
+      background: rgba(5,13,26,0.97); padding: 20px 5vw; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    nav.menu-open .nav-actions {
+      display: flex; position: absolute; top: 220px; left: 0; right: 0;
+      background: rgba(5,13,26,0.97); padding: 16px 5vw; border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-direction: column;
+    }
+    .test-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .impact-grid { grid-template-columns: 1fr 1fr; }
+    h1 { font-size: 2rem; }
+    section { padding: 70px 5vw; }
+    .analytics-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     NAV
+════════════════════════════════ -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo" onclick="showPage('landing')">
+    <div class="logo-icon">⚡</div>
+    Relief<span>Link</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features" onclick="showPage('landing')">Features</a></li>
+    <li><a href="#how" onclick="showPage('landing')">How It Works</a></li>
+    <li><a href="#dashboard" onclick="showPage('landing')">Dashboard</a></li>
+    <li><a href="#impact" onclick="showPage('landing')">Impact</a></li>
+    <li><a href="#" onclick="showPage('ngo-dashboard')">NGO Portal</a></li>
+    <li><a href="#" onclick="showPage('analytics')">Analytics</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn btn-ghost" onclick="openModal('volunteer')">Volunteer Login</button>
+    <button class="btn btn-primary" onclick="openModal('ngo')">NGO Login</button>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     PAGES WRAPPER
+════════════════════════════════ -->
+
+<!-- ── LANDING PAGE ── -->
+<div id="page-landing" class="page active">
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        AI-Powered Coordination Platform
+      </div>
+      <h1>The Right Volunteer.<br><span class="accent">Right Place.</span><br><span class="accent2">Right Time.</span></h1>
+      <p class="hero-sub">AI-powered real-time coordination platform connecting NGOs with volunteers based on urgency, location, and skills — when it matters most.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary btn-lg" onclick="openModal('demo')"><i class="fa-solid fa-play"></i> Live Demo</button>
+        <button class="btn btn-green btn-lg" onclick="openModal('volunteer')"><i class="fa-solid fa-hands-helping"></i> Join as Volunteer</button>
+        <button class="btn btn-ghost btn-lg" onclick="openModal('ngo')"><i class="fa-solid fa-building-ngo"></i> Register NGO</button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val" data-count="500">0</div>
+          <div class="hero-stat-lab">Volunteers</div>
+        </div>
+        <div>
+          <div class="hero-stat-val" data-count="120">0</div>
+          <div class="hero-stat-lab">NGO Partners</div>
+        </div>
+        <div>
+          <div class="hero-stat-val" data-count="2000">0</div>
+          <div class="hero-stat-lab">Tasks Completed</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">95%</div>
+          <div class="hero-stat-lab">Faster Response</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-mockup">
+      <div style="position:relative;">
+        <div class="float-badge top-right">
+          <span class="float-icon">🟢</span> 47 Volunteers Online
+        </div>
+        <div class="mockup-card">
+          <div class="mockup-header">
+            <div class="mockup-title">🗺 Live Task Map</div>
+            <div class="mockup-status"><span style="width:6px;height:6px;background:var(--green);border-radius:50%;"></span> Live</div>
+          </div>
+          <!-- Fake Map -->
+          <div class="fake-map">
+            <div class="map-grid-lines"></div>
+            <div class="map-roads"></div>
+            <!-- Red task pins -->
+            <div class="map-pin pin-red" style="left:28%;top:42%"><div class="pin-head">!</div><div class="pin-tail"></div></div>
+            <div class="map-pin pin-red" style="left:60%;top:30%;animation-delay:0.5s"><div class="pin-head">!</div><div class="pin-tail"></div></div>
+            <div class="map-pin pin-red" style="left:75%;top:62%;animation-delay:1s"><div class="pin-head">!</div><div class="pin-tail"></div></div>
+            <!-- Green volunteer dots -->
+            <div class="vol-dot" style="left:35%;top:55%"></div>
+            <div class="vol-dot" style="left:50%;top:40%;animation-delay:0.7s"></div>
+            <div class="vol-dot" style="left:68%;top:48%;animation-delay:1.2s"></div>
+            <div class="vol-dot" style="left:22%;top:65%;animation-delay:0.4s"></div>
+            <div class="map-legend">
+              <div class="legend-row"><div class="legend-dot" style="background:var(--red);box-shadow:0 0 4px rgba(255,75,110,0.7)"></div>Urgent Tasks</div>
+              <div class="legend-row"><div class="legend-dot" style="background:var(--green)"></div>Volunteers</div>
+            </div>
+          </div>
+          <!-- Volunteer Cards -->
+          <div class="vol-cards">
+            <div class="vol-card">
+              <div class="vol-avatar" style="background:linear-gradient(135deg,#1a6cff,#00e5a0)">RK</div>
+              <div class="vol-info">
+                <div class="vol-name">Ravi Kumar</div>
+                <div class="vol-skill">Medical Aid • Tamil Nadu</div>
+              </div>
+              <div>
+                <div class="vol-dist">0.8 km</div>
+                <div class="trust-bar"><div class="trust-fill" style="width:92%"></div></div>
+              </div>
+            </div>
+            <div class="vol-card">
+              <div class="vol-avatar" style="background:linear-gradient(135deg,#7c3aed,#1a6cff)">SP</div>
+              <div class="vol-info">
+                <div class="vol-name">Sunita Patel</div>
+                <div class="vol-skill">Logistics • Transport</div>
+              </div>
+              <div>
+                <div class="vol-dist">1.4 km</div>
+                <div class="trust-bar"><div class="trust-fill" style="width:87%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="float-badge bot-left">
+          <span class="float-icon">🤖</span> AI matched 3 volunteers
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-head center-head reveal">
+    <div class="section-label">Platform Features</div>
+    <h2>Everything Relief Work Needs</h2>
+    <p class="section-sub">A complete end-to-end coordination stack built for speed, trust, and scale.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card reveal" style="transition-delay:0.05s">
+      <div class="feat-icon" style="background:rgba(26,108,255,0.15)">🧠</div>
+      <h3>Smart Matching Engine</h3>
+      <p>AI ranks volunteers by skills, real-time location, task urgency, and historical reliability score. Zero manual effort needed.</p>
+      <span class="feat-tag" style="background:rgba(26,108,255,0.12);color:var(--blue-light)">AI-Powered</span>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:0.1s">
+      <div class="feat-icon" style="background:rgba(0,229,160,0.12)">🗺</div>
+      <h3>Live Task Map</h3>
+      <p>Real-time geographic view. Red pins show open tasks with urgency levels; green dots show available volunteers nearby.</p>
+      <span class="feat-tag" style="background:rgba(0,229,160,0.12);color:var(--green)">Real-Time</span>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:0.15s">
+      <div class="feat-icon" style="background:rgba(255,165,0,0.12)">🔔</div>
+      <h3>Instant Notifications</h3>
+      <p>Push alerts delivered within seconds for urgent tasks. Volunteers receive deep-linked notifications to accept immediately.</p>
+      <span class="feat-tag" style="background:rgba(255,165,0,0.12);color:#f59e0b">&lt;5 sec Alert</span>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:0.2s">
+      <div class="feat-icon" style="background:rgba(100,180,255,0.12)">📸</div>
+      <h3>Proof of Work</h3>
+      <p>Volunteers upload timestamped geotagged photos on task completion. NGOs get real-time confirmation feeds.</p>
+      <span class="feat-tag" style="background:rgba(100,180,255,0.12);color:#60baff">Verified</span>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:0.25s">
+      <div class="feat-icon" style="background:rgba(255,75,110,0.12)">⭐</div>
+      <h3>Trust Score System</h3>
+      <p>Every volunteer builds a reliability rating based on punctuality, completion rate, and NGO reviews. Builds accountability.</p>
+      <span class="feat-tag" style="background:rgba(255,75,110,0.12);color:var(--red)">Reputation</span>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:0.3s">
+      <div class="feat-icon" style="background:rgba(168,85,247,0.12)">📄</div>
+      <h3>AI Paper Digitizer</h3>
+      <p>Upload handwritten or printed paper requests. AI extracts task details and automatically creates structured task cards.</p>
+      <span class="feat-tag" style="background:rgba(168,85,247,0.12);color:#c084fc">OCR + LLM</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-head center-head reveal">
+    <div class="section-label">Process</div>
+    <h2>From Task to Completion in Minutes</h2>
+    <p class="section-sub">A streamlined 4-step flow that connects need with action — fast.</p>
+  </div>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-icon">🏢</div>
+      <div class="step-num">01</div>
+      <h3>NGO Posts Task</h3>
+      <p>NGO describes the task, sets urgency level, required skills, and location. AI can also digitize paper requests automatically.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">🤖</div>
+      <div class="step-num">02</div>
+      <h3>AI Ranks Volunteers</h3>
+      <p>Smart engine scores all available volunteers by proximity, skill match, past reliability, and current availability in real-time.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">✅</div>
+      <div class="step-num">03</div>
+      <h3>Volunteer Accepts</h3>
+      <p>Top-ranked volunteers receive a push notification. One tap accepts the task with estimated arrival time calculated automatically.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">📸</div>
+      <div class="step-num">04</div>
+      <h3>Task Completed with Proof</h3>
+      <p>Volunteer uploads photo proof, updates status, and earns trust score points. NGO receives instant confirmation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section id="dashboard">
+  <div class="section-head reveal">
+    <div class="section-label">Platform Preview</div>
+    <h2>Powerful Dashboards for Every Role</h2>
+    <p class="section-sub">NGOs manage operations from a command center. Volunteers get a clean mobile-first experience.</p>
+  </div>
+  <div class="dash-split">
+    <!-- NGO Dashboard -->
+    <div class="reveal">
+      <div style="font-family:var(--font-head);font-size:0.85rem;color:var(--muted);margin-bottom:16px;letter-spacing:1px;text-transform:uppercase;">NGO Dashboard</div>
+      <div class="dash-card-grid">
+        <div class="dash-card">
+          <div class="dash-card-icon">📋</div>
+          <div class="dash-card-label">Open Tasks</div>
+          <div class="dash-card-val" style="color:var(--blue-light)">24</div>
+          <div class="dash-card-sub">↑ 4 new today</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-icon">🚨</div>
+          <div class="dash-card-label">Urgent Requests</div>
+          <div class="dash-card-val" style="color:var(--red)">7</div>
+          <div class="dash-card-sub">Needs action now</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-icon">👥</div>
+          <div class="dash-card-label">Available Volunteers</div>
+          <div class="dash-card-val" style="color:var(--green)">47</div>
+          <div class="dash-card-sub">Within 5 km radius</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-icon">✅</div>
+          <div class="dash-card-label">Completed Today</div>
+          <div class="dash-card-val" style="color:var(--white)">18</div>
+          <div class="dash-card-sub">98% on time</div>
+        </div>
+      </div>
+      <div class="dash-task-list">
+        <div class="dash-task">
+          <div class="task-urgency" style="background:var(--red);box-shadow:0 0 6px rgba(255,75,110,0.6)"></div>
+          <div class="task-info">
+            <div class="task-name">Emergency Food Distribution – Gandhipuram</div>
+            <div class="task-loc">📍 2.1 km · Medical Aid · 3 volunteers needed</div>
+          </div>
+          <span class="task-badge" style="background:rgba(255,75,110,0.15);color:var(--red)">URGENT</span>
+        </div>
+        <div class="dash-task">
+          <div class="task-urgency" style="background:var(--blue-light)"></div>
+          <div class="task-info">
+            <div class="task-name">Medical Supply Transport to RS Puram</div>
+            <div class="task-loc">📍 4.5 km · Transport · 1 volunteer needed</div>
+          </div>
+          <span class="task-badge" style="background:rgba(26,108,255,0.15);color:var(--blue-light)">OPEN</span>
+        </div>
+        <div class="dash-task">
+          <div class="task-urgency" style="background:var(--green)"></div>
+          <div class="task-info">
+            <div class="task-name">Water Distribution – Peelamedu Camp</div>
+            <div class="task-loc">📍 6.2 km · Logistics · 2 volunteers needed</div>
+          </div>
+          <span class="task-badge" style="background:rgba(0,229,160,0.15);color:var(--green)">MATCHED</span>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile UI -->
+    <div class="reveal" style="transition-delay:0.15s">
+      <div style="font-family:var(--font-head);font-size:0.85rem;color:var(--muted);margin-bottom:16px;letter-spacing:1px;text-transform:uppercase;">Volunteer App</div>
+      <div class="mobile-ui">
+        <div class="mobile-notch"></div>
+        <div class="mobile-header">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">Welcome back</div>
+          <div class="mobile-header-title">Ravi Kumar 🟢</div>
+          <div style="font-size:0.72rem;color:var(--green);margin-top:2px">Trust Score: 92 · 58 tasks</div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;font-weight:600">NEARBY TASKS</div>
+        <div class="mobile-tasks">
+          <div class="mobile-task">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <div style="font-size:0.7rem;background:rgba(255,75,110,0.15);color:var(--red);padding:2px 7px;border-radius:4px;font-weight:700">URGENT</div>
+              <div style="font-size:0.68rem;color:var(--muted)">2 min ago</div>
+            </div>
+            <div class="mobile-task-title">Emergency food packs needed</div>
+            <div class="mobile-task-meta">
+              <div class="mobile-task-dist">📍 0.8 km · Medical Aid</div>
+              <button class="mobile-accept" onclick="alert('Task accepted! Navigate to location.')">Accept</button>
+            </div>
+          </div>
+          <div class="mobile-task">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <div style="font-size:0.7rem;background:rgba(26,108,255,0.15);color:var(--blue-light);padding:2px 7px;border-radius:4px;font-weight:700">OPEN</div>
+              <div style="font-size:0.68rem;color:var(--muted)">15 min ago</div>
+            </div>
+            <div class="mobile-task-title">Transport medical supplies</div>
+            <div class="mobile-task-meta">
+              <div class="mobile-task-dist">📍 1.4 km · Transport</div>
+              <button class="mobile-accept" onclick="alert('Task accepted!')">Accept</button>
+            </div>
+          </div>
+          <div class="mobile-task">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <div style="font-size:0.7rem;background:rgba(0,229,160,0.15);color:var(--green);padding:2px 7px;border-radius:4px;font-weight:700">MATCHED</div>
+              <div style="font-size:0.68rem;color:var(--muted)">Best fit</div>
+            </div>
+            <div class="mobile-task-title">Water distribution camp</div>
+            <div class="mobile-task-meta">
+              <div class="mobile-task-dist">📍 2.1 km · Logistics</div>
+              <button class="mobile-accept" onclick="alert('Task accepted!')">Accept</button>
+            </div>
+          </div>
+        </div>
+        <div class="mobile-bottom">
+          <div class="mobile-nav-item active"><i class="fa-solid fa-house"></i>Home</div>
+          <div class="mobile-nav-item"><i class="fa-solid fa-map"></i>Map</div>
+          <div class="mobile-nav-item"><i class="fa-solid fa-list-check"></i>Tasks</div>
+          <div class="mobile-nav-item"><i class="fa-solid fa-user"></i>Profile</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="section-head center-head reveal">
+    <div class="section-label">Impact</div>
+    <h2>Numbers That Matter</h2>
+    <p class="section-sub">Real-world results from our pilot deployments across Tamil Nadu.</p>
+  </div>
+  <div class="impact-grid">
+    <div class="impact-card reveal">
+      <div class="impact-icon">🙋</div>
+      <div class="impact-num" data-count="500">0</div>
+      <div class="impact-label">Active Volunteers</div>
+    </div>
+    <div class="impact-card reveal" style="transition-delay:0.1s">
+      <div class="impact-icon">🏛</div>
+      <div class="impact-num" data-count="120">0</div>
+      <div class="impact-label">NGO Partners</div>
+    </div>
+    <div class="impact-card reveal" style="transition-delay:0.2s">
+      <div class="impact-icon">✅</div>
+      <div class="impact-num" data-count="2000">0</div>
+      <div class="impact-label">Tasks Completed</div>
+    </div>
+    <div class="impact-card reveal" style="transition-delay:0.3s">
+      <div class="impact-icon">⚡</div>
+      <div class="impact-num">95%</div>
+      <div class="impact-label">Faster Response Time</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-head center-head reveal">
+    <div class="section-label">Testimonials</div>
+    <h2>Trusted by Relief Workers</h2>
+    <p class="section-sub">Hear from the people on the ground using ReliefLink every day.</p>
+  </div>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="test-quote">"</div>
+      <p class="test-text">ReliefLink transformed how we coordinate disaster response. What used to take 2 hours of phone calls now happens in under 10 minutes. The AI matching is genuinely impressive — it understands urgency levels and skill gaps better than our manual process ever could.</p>
+      <div class="test-author">
+        <div class="test-avatar" style="background:linear-gradient(135deg,#1a6cff,#0050cc)">AM</div>
+        <div>
+          <div class="test-stars">★★★★★</div>
+          <div class="test-name">Ananya Mehta</div>
+          <div class="test-role">Operations Director, Care Tamil Nadu NGO</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card reveal" style="transition-delay:0.15s">
+      <div class="test-quote">"</div>
+      <p class="test-text">As a volunteer, the app makes me feel like my time is actually valued. I get matched to tasks that fit my skills exactly, the map navigation is seamless, and submitting proof of work takes 10 seconds. My trust score even helped me get selected for specialized rescue missions.</p>
+      <div class="test-author">
+        <div class="test-avatar" style="background:linear-gradient(135deg,#00e5a0,#009966)">KS</div>
+        <div>
+          <div class="test-stars">★★★★★</div>
+          <div class="test-name">Karthik Subramanian</div>
+          <div class="test-role">Field Volunteer · Coimbatore</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section style="padding:80px 5vw;background:linear-gradient(135deg,rgba(26,108,255,0.12),rgba(0,229,160,0.08));border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06)">
+  <div style="text-align:center;max-width:600px;margin:0 auto" class="reveal">
+    <h2>Ready to Transform Relief Coordination?</h2>
+    <p style="color:var(--muted);margin:1rem 0 2rem;font-size:1.05rem;font-weight:300;">Join the growing network of NGOs and volunteers making disaster response smarter, faster, and more human.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-green btn-lg" onclick="openModal('volunteer')"><i class="fa-solid fa-user-plus"></i> Join as Volunteer</button>
+      <button class="btn btn-primary btn-lg" onclick="openModal('ngo')"><i class="fa-solid fa-building"></i> Register Your NGO</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo" style="display:inline-flex;margin-bottom:4px">
+        <div class="logo-icon">⚡</div>
+        Relief<span>Link</span>
+      </a>
+      <p>AI-powered NGO and volunteer coordination platform. Built for speed, trust, and scale.</p>
+      <div class="footer-social">
+        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="mailto:team@relieflink.ai" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#" onclick="showPage('ngo-dashboard')">NGO Dashboard</a></li>
+        <li><a href="#" onclick="showPage('analytics')">Analytics</a></li>
+        <li><a href="#" onclick="openModal('demo')">Live Demo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>For Teams</h4>
+      <ul>
+        <li><a href="#" onclick="openModal('volunteer')">Volunteer Signup</a></li>
+        <li><a href="#" onclick="openModal('ngo')">NGO Registration</a></li>
+        <li><a href="#">API Access</a></li>
+        <li><a href="#">Documentation</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Hackathon</h4>
+      <ul>
+        <li><a href="https://github.com" target="_blank">GitHub Repo</a></li>
+        <li><a href="#">Pitch Deck</a></li>
+        <li><a href="#">Problem Statement</a></li>
+        <li><a href="#impact">Impact Stats</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 ReliefLink. Built with ❤ for social good.</div>
+    <div class="footer-team">
+      <span style="color:var(--muted)">Team:</span>
+      <div class="team-pills">
+        <span class="team-pill">Nitesh K</span>
+        <span class="team-pill">Dev 2</span>
+        <span class="team-pill">Dev 3</span>
+        <span class="team-pill">Dev 4</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page-landing -->
+
+<!-- ── NGO DASHBOARD PAGE ── -->
+<div id="page-ngo-dashboard" class="page">
+<div class="dash-page">
+  <div class="dash-page-header">
+    <div>
+      <div class="dash-page-title">NGO Command Center</div>
+      <div class="dash-page-sub">Care Tamil Nadu · Last updated: just now</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" onclick="openModal('task')"><i class="fa-solid fa-plus"></i> Post Task</button>
+      <button class="btn btn-primary"><i class="fa-solid fa-refresh"></i> Refresh</button>
+      <button class="btn btn-ghost" onclick="showPage('landing')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(26,108,255,0.15);color:var(--blue-light)"><i class="fa-solid fa-list-check"></i></div>
+      <div><div class="stat-mini-val" style="color:var(--blue-light)">24</div><div class="stat-mini-lab">Open Tasks</div></div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(255,75,110,0.15);color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div><div class="stat-mini-val" style="color:var(--red)">7</div><div class="stat-mini-lab">Urgent Now</div></div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(0,229,160,0.15);color:var(--green)"><i class="fa-solid fa-users"></i></div>
+      <div><div class="stat-mini-val" style="color:var(--green)">47</div><div class="stat-mini-lab">Available Volunteers</div></div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b"><i class="fa-solid fa-check-circle"></i></div>
+      <div><div class="stat-mini-val" style="color:#f59e0b">18</div><div class="stat-mini-lab">Completed Today</div></div>
+    </div>
+  </div>
+  <div class="dash-two-col">
+    <div class="dash-panel">
+      <h4>Active Tasks <button class="panel-action" onclick="openModal('task')">+ New Task</button></h4>
+      <div class="task-row">
+        <div class="task-row-icon" style="background:rgba(255,75,110,0.15);color:var(--red)"><i class="fa-solid fa-utensils"></i></div>
+        <div class="task-row-info"><div class="task-row-name">Emergency Food Distribution</div><div class="task-row-meta">📍 Gandhipuram · 3 volunteers · Due: 2h</div></div>
+        <span class="status-pill status-urgent">URGENT</span>
+      </div>
+      <div class="task-row">
+        <div class="task-row-icon" style="background:rgba(26,108,255,0.15);color:var(--blue-light)"><i class="fa-solid fa-truck-medical"></i></div>
+        <div class="task-row-info"><div class="task-row-name">Medical Supply Transport</div><div class="task-row-meta">📍 RS Puram · 1 volunteer · Due: 4h</div></div>
+        <span class="status-pill status-open">OPEN</span>
+      </div>
+      <div class="task-row">
+        <div class="task-row-icon" style="background:rgba(0,229,160,0.15);color:var(--green)"><i class="fa-solid fa-droplet"></i></div>
+        <div class="task-row-info"><div class="task-row-name">Water Distribution Camp</div><div class="task-row-meta">📍 Peelamedu · 2 volunteers · Matched</div></div>
+        <span class="status-pill status-done">MATCHED</span>
+      </div>
+      <div class="task-row">
+        <div class="task-row-icon" style="background:rgba(168,85,247,0.15);color:#c084fc"><i class="fa-solid fa-house-chimney-crack"></i></div>
+        <div class="task-row-info"><div class="task-row-name">Shelter Assessment – North Zone</div><div class="task-row-meta">📍 Saravanampatti · 1 volunteer · Due: 6h</div></div>
+        <span class="status-pill status-open">OPEN</span>
+      </div>
+      <div class="task-row">
+        <div class="task-row-icon" style="background:rgba(0,229,160,0.15);color:var(--green)"><i class="fa-solid fa-check"></i></div>
+        <div class="task-row-info"><div class="task-row-name">Blanket Distribution – Camp A</div><div class="task-row-meta">📍 Ukkadam · Completed 1h ago · Proof uploaded</div></div>
+        <span class="status-pill status-done">DONE</span>
+      </div>
+    </div>
+    <div class="dash-panel">
+      <h4>Top Volunteers</h4>
+      <div class="vol-cards" style="gap:10px">
+        <div class="vol-card" style="padding:12px 14px">
+          <div class="vol-avatar" style="background:linear-gradient(135deg,#1a6cff,#00e5a0);width:38px;height:38px">RK</div>
+          <div class="vol-info"><div class="vol-name">Ravi Kumar</div><div class="vol-skill">Medical Aid</div></div>
+          <div style="text-align:right"><div style="font-size:0.75rem;color:var(--green);font-weight:700">⭐ 92</div><div style="font-size:0.7rem;color:var(--muted)">0.8km</div></div>
+        </div>
+        <div class="vol-card" style="padding:12px 14px">
+          <div class="vol-avatar" style="background:linear-gradient(135deg,#7c3aed,#1a6cff);width:38px;height:38px">SP</div>
+          <div class="vol-info"><div class="vol-name">Sunita Patel</div><div class="vol-skill">Logistics</div></div>
+          <div style="text-align:right"><div style="font-size:0.75rem;color:var(--green);font-weight:700">⭐ 87</div><div style="font-size:0.7rem;color:var(--muted)">1.4km</div></div>
+        </div>
+        <div class="vol-card" style="padding:12px 14px">
+          <div class="vol-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444);width:38px;height:38px">MR</div>
+          <div class="vol-info"><div class="vol-name">Mohammed Rizwan</div><div class="vol-skill">Transport</div></div>
+          <div style="text-align:right"><div style="font-size:0.75rem;color:var(--green);font-weight:700">⭐ 84</div><div style="font-size:0.7rem;color:var(--muted)">2.0km</div></div>
+        </div>
+        <div class="vol-card" style="padding:12px 14px">
+          <div class="vol-avatar" style="background:linear-gradient(135deg,#00e5a0,#009966);width:38px;height:38px">PD</div>
+          <div class="vol-info"><div class="vol-name">Priya Devi</div><div class="vol-skill">First Aid</div></div>
+          <div style="text-align:right"><div style="font-size:0.75rem;color:var(--green);font-weight:700">⭐ 79</div><div style="font-size:0.7rem;color:var(--muted)">2.8km</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Mini map panel -->
+  <div class="dash-panel">
+    <h4>Live Task Map <span style="font-size:0.75rem;color:var(--green);font-weight:500">● Live</span></h4>
+    <div class="fake-map" style="height:220px">
+      <div class="map-grid-lines"></div>
+      <div class="map-roads"></div>
+      <div class="map-pin pin-red" style="left:20%;top:38%"><div class="pin-head">!</div><div class="pin-tail"></div></div>
+      <div class="map-pin pin-red" style="left:45%;top:25%;animation-delay:0.3s"><div class="pin-head">!</div><div class="pin-tail"></div></div>
+      <div class="map-pin pin-red" style="left:70%;top:55%;animation-delay:0.8s"><div class="pin-head">!</div><div class="pin-tail"></div></div>
+      <div class="map-pin pin-red" style="left:55%;top:68%;animation-delay:1.2s"><div class="pin-head">!</div><div class="pin-tail"></div></div>
+      <div class="vol-dot" style="left:28%;top:52%"></div>
+      <div class="vol-dot" style="left:40%;top:38%;animation-delay:0.5s"></div>
+      <div class="vol-dot" style="left:62%;top:42%;animation-delay:1s"></div>
+      <div class="vol-dot" style="left:76%;top:65%;animation-delay:0.3s"></div>
+      <div class="vol-dot" style="left:15%;top:70%;animation-delay:0.7s"></div>
+      <div class="map-legend">
+        <div class="legend-row"><div class="legend-dot" style="background:var(--red);box-shadow:0 0 4px rgba(255,75,110,0.7)"></div>Tasks (4 open)</div>
+        <div class="legend-row"><div class="legend-dot" style="background:var(--green)"></div>Volunteers (5 nearby)</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /page-ngo-dashboard -->
+
+<!-- ── ANALYTICS PAGE ── -->
+<div id="page-analytics" class="page">
+<div class="dash-page">
+  <div class="dash-page-header">
+    <div>
+      <div class="dash-page-title">Admin Analytics</div>
+      <div class="dash-page-sub">Platform-wide insights · April 2025</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <select style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:9px 14px;border-radius:8px;font-family:var(--font-body);font-size:0.85rem;outline:none">
+        <option>Last 30 Days</option><option>Last 7 Days</option><option>This Quarter</option>
+      </select>
+      <button class="btn btn-ghost" onclick="showPage('landing')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(26,108,255,0.15);color:var(--blue-light)"><i class="fa-solid fa-chart-line"></i></div>
+      <div><div class="stat-mini-val" style="color:var(--blue-light)">2,048</div><div class="stat-mini-lab">Total Tasks</div></div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(0,229,160,0.15);color:var(--green)"><i class="fa-solid fa-users"></i></div>
+      <div><div class="stat-mini-val" style="color:var(--green)">523</div><div class="stat-mini-lab">Active Volunteers</div></div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(168,85,247,0.15);color:#c084fc"><i class="fa-solid fa-building-ngo"></i></div>
+      <div><div class="stat-mini-val" style="color:#c084fc">127</div><div class="stat-mini-lab">NGOs Onboarded</div></div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b"><i class="fa-solid fa-bolt"></i></div>
+      <div><div class="stat-mini-val" style="color:#f59e0b">8.2 min</div><div class="stat-mini-lab">Avg Match Time</div></div>
+    </div>
+  </div>
+  <div class="analytics-grid">
+    <div class="dash-panel">
+      <h4>Tasks Completed / Week</h4>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+    <div class="dash-panel">
+      <h4>Task Categories</h4>
+      <div class="donut-wrap">
+        <svg class="donut-svg" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1a6cff" stroke-width="3" stroke-dasharray="40 60" stroke-dashoffset="25" transform="rotate(-90 18 18)"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#00e5a0" stroke-width="3" stroke-dasharray="30 70" stroke-dashoffset="-15" transform="rotate(-90 18 18)"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="20 80" stroke-dashoffset="-45" transform="rotate(-90 18 18)"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#c084fc" stroke-width="3" stroke-dasharray="10 90" stroke-dashoffset="-65" transform="rotate(-90 18 18)"/>
+        </svg>
+        <div class="donut-legend">
+          <div class="donut-item"><div class="donut-dot" style="background:#1a6cff"></div>Medical Aid (40%)</div>
+          <div class="donut-item"><div class="donut-dot" style="background:#00e5a0"></div>Logistics (30%)</div>
+          <div class="donut-item"><div class="donut-dot" style="background:#f59e0b"></div>Transport (20%)</div>
+          <div class="donut-item"><div class="donut-dot" style="background:#c084fc"></div>Other (10%)</div>
+        </div>
+      </div>
+    </div>
+    <div class="dash-panel">
+      <h4>Volunteer Trust Score Distribution</h4>
+      <div class="bar-chart" id="trustChart"></div>
+    </div>
+  </div>
+  <div class="dash-two-col">
+    <div class="dash-panel">
+      <h4>Top Performing NGOs</h4>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+        <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px">
+          <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#1a6cff,#0050cc);display:grid;place-items:center;font-size:0.8rem;font-weight:700">CT</div>
+          <div style="flex:1"><div style="font-size:0.84rem;font-weight:600">Care Tamil Nadu</div><div style="font-size:0.73rem;color:var(--muted)">342 tasks completed</div></div>
+          <div style="font-size:0.8rem;color:var(--green);font-weight:700">98%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px">
+          <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#00e5a0,#009966);display:grid;place-items:center;font-size:0.8rem;font-weight:700">RH</div>
+          <div style="flex:1"><div style="font-size:0.84rem;font-weight:600">Relief Hub India</div><div style="font-size:0.73rem;color:var(--muted)">289 tasks completed</div></div>
+          <div style="font-size:0.8rem;color:var(--green);font-weight:700">95%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px">
+          <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#1a6cff);display:grid;place-items:center;font-size:0.8rem;font-weight:700">SF</div>
+          <div style="flex:1"><div style="font-size:0.84rem;font-weight:600">Seva Foundation</div><div style="font-size:0.73rem;color:var(--muted)">210 tasks completed</div></div>
+          <div style="font-size:0.8rem;color:var(--green);font-weight:700">91%</div>
+        </div>
+      </div>
+    </div>
+    <div class="dash-panel">
+      <h4>Response Time Trend</h4>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        <div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px"><span style="color:var(--muted)">Jan 2025</span><span style="color:var(--muted)">42 min</span></div><div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px"><div style="height:100%;width:70%;background:var(--red);border-radius:3px"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px"><span style="color:var(--muted)">Feb 2025</span><span style="color:var(--muted)">28 min</span></div><div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px"><div style="height:100%;width:46%;background:#f59e0b;border-radius:3px"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px"><span style="color:var(--muted)">Mar 2025</span><span style="color:var(--muted)">16 min</span></div><div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px"><div style="height:100%;width:26%;background:var(--blue-light);border-radius:3px"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px"><span style="color:var(--muted)">Apr 2025</span><span style="color:var(--green);font-weight:700">8.2 min ↓</span></div><div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px"><div style="height:100%;width:14%;background:var(--green);border-radius:3px"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /page-analytics -->
+
+<!-- ════════════════════════════════
+     MODALS
+════════════════════════════════ -->
+
+<!-- Volunteer Login Modal -->
+<div class="modal-overlay" id="modal-volunteer">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('volunteer')"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Welcome Back 👋</h3>
+    <p class="modal-sub">Sign in to your volunteer account</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab(this,'login')">Sign In</button>
+      <button class="modal-tab" onclick="switchTab(this,'register')">Register</button>
+    </div>
+    <div id="vol-login">
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="ravi@example.com"/></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"/></div>
+      <button class="btn btn-green btn-lg form-submit" onclick="handleLogin('volunteer')"><i class="fa-solid fa-arrow-right"></i> Sign In</button>
+    </div>
+    <div id="vol-register" style="display:none">
+      <div class="form-group"><label>Full Name</label><input type="text" placeholder="Ravi Kumar"/></div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="ravi@example.com"/></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+91 98765 43210"/></div>
+      <div class="form-group"><label>Primary Skill</label>
+        <select><option>Medical Aid</option><option>Logistics</option><option>Transport</option><option>First Aid</option><option>Construction</option><option>IT Support</option></select>
+      </div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"/></div>
+      <button class="btn btn-green btn-lg form-submit" onclick="handleRegister('volunteer')"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+    </div>
+    <div class="form-footer">Forgot password? <a href="#">Reset here</a></div>
+  </div>
+</div>
+
+<!-- NGO Login Modal -->
+<div class="modal-overlay" id="modal-ngo">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('ngo')"><i class="fa-solid fa-xmark"></i></button>
+    <h3>NGO Portal 🏛</h3>
+    <p class="modal-sub">Access your organization's dashboard</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTabNgo(this,'login')">Sign In</button>
+      <button class="modal-tab" onclick="switchTabNgo(this,'register')">Register NGO</button>
+    </div>
+    <div id="ngo-login">
+      <div class="form-group"><label>Organisation Email</label><input type="email" placeholder="ops@caretamilnadu.org"/></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"/></div>
+      <button class="btn btn-primary btn-lg form-submit" onclick="handleLogin('ngo')"><i class="fa-solid fa-building"></i> Access Dashboard</button>
+    </div>
+    <div id="ngo-register" style="display:none">
+      <div class="form-group"><label>Organisation Name</label><input type="text" placeholder="Care Tamil Nadu NGO"/></div>
+      <div class="form-group"><label>Official Email</label><input type="email" placeholder="ops@org.com"/></div>
+      <div class="form-group"><label>Registration Number</label><input type="text" placeholder="NGO/TN/2024/0001"/></div>
+      <div class="form-group"><label>Focus Area</label>
+        <select><option>Disaster Relief</option><option>Medical Aid</option><option>Food Distribution</option><option>Education</option><option>Multi-Purpose</option></select>
+      </div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"/></div>
+      <button class="btn btn-primary btn-lg form-submit" onclick="handleRegister('ngo')"><i class="fa-solid fa-check"></i> Register Organisation</button>
+    </div>
+  </div>
+</div>
+
+<!-- Demo Modal -->
+<div class="modal-overlay" id="modal-demo">
+  <div class="modal" style="max-width:500px">
+    <button class="modal-close" onclick="closeModal('demo')"><i class="fa-solid fa-xmark"></i></button>
+    <h3>🚀 Live Demo</h3>
+    <p class="modal-sub" style="margin-bottom:20px">Experience the ReliefLink platform in action</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <button class="btn btn-primary btn-lg" style="justify-content:flex-start" onclick="closeModal('demo');showPage('ngo-dashboard')">
+        <i class="fa-solid fa-building" style="width:20px"></i> View NGO Dashboard
+      </button>
+      <button class="btn btn-green btn-lg" style="justify-content:flex-start;color:#050d1a" onclick="closeModal('demo');showPage('analytics')">
+        <i class="fa-solid fa-chart-line" style="width:20px"></i> View Admin Analytics
+      </button>
+      <button class="btn btn-ghost btn-lg" style="justify-content:flex-start" onclick="closeModal('demo');openModal('volunteer')">
+        <i class="fa-solid fa-user" style="width:20px"></i> Try Volunteer Login
+      </button>
+    </div>
+    <div style="margin-top:24px;padding:16px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:10px">
+      <div style="font-size:0.82rem;color:var(--green);font-weight:600;margin-bottom:6px">🔐 Demo Credentials</div>
+      <div style="font-size:0.8rem;color:var(--muted)">Email: demo@relieflink.ai</div>
+      <div style="font-size:0.8rem;color:var(--muted)">Password: demo1234</div>
+    </div>
+  </div>
+</div>
+
+<!-- Post Task Modal -->
+<div class="modal-overlay" id="modal-task">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('task')"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Post New Task 📋</h3>
+    <p class="modal-sub">Describe the task and AI will match the best volunteers</p>
+    <div class="form-group"><label>Task Title</label><input type="text" placeholder="e.g. Emergency food distribution – Zone A"/></div>
+    <div class="form-group"><label>Location / Address</label><input type="text" placeholder="Gandhipuram, Coimbatore"/></div>
+    <div class="form-group"><label>Urgency Level</label>
+      <select>
+        <option>🚨 Critical – Immediate response needed</option>
+        <option>⚠️ High – Within 2 hours</option>
+        <option>🔵 Medium – Within today</option>
+        <option>🟢 Low – Flexible timing</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Required Skill</label>
+      <select><option>Medical Aid</option><option>Logistics</option><option>Transport</option><option>First Aid</option><option>Construction</option></select>
+    </div>
+    <div class="form-group"><label>Volunteers Needed</label>
+      <input type="number" min="1" max="50" placeholder="3"/>
+    </div>
+    <button class="btn btn-primary btn-lg form-submit" onclick="postTask()"><i class="fa-solid fa-bolt"></i> Post Task & Match Volunteers</button>
+  </div>
+</div>
+
+<script>
+// ── PAGE ROUTING ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+  if (page === 'analytics') buildCharts();
+}
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── HAMBURGER ──
+function toggleMenu() {
+  document.getElementById('mainNav').classList.toggle('menu-open');
+}
+
+// ── MODALS ──
+function openModal(name) {
+  document.getElementById('modal-' + name).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(name) {
+  document.getElementById('modal-' + name).classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+});
+
+// ── MODAL TABS ──
+function switchTab(btn, tab) {
+  btn.parentElement.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('vol-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('vol-register').style.display = tab === 'register' ? 'block' : 'none';
+}
+function switchTabNgo(btn, tab) {
+  btn.parentElement.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ngo-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('ngo-register').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+// ── LOGIN/REGISTER HANDLERS ──
+function handleLogin(type) {
+  closeModal(type);
+  if (type === 'ngo') showPage('ngo-dashboard');
+  else showNotification('✅ Welcome back, Ravi! You are now logged in.', 'green');
+}
+function handleRegister(type) {
+  closeModal(type);
+  showNotification('🎉 Account created! Welcome to ReliefLink.', 'green');
+}
+function postTask() {
+  closeModal('task');
+  showNotification('⚡ Task posted! AI matched 3 volunteers within 2 km.', 'blue');
+}
+
+// ── TOAST NOTIFICATION ──
+function showNotification(msg, color) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position:fixed;bottom:24px;right:24px;z-index:9999;
+    background:${color === 'green' ? 'rgba(0,229,160,0.15)' : 'rgba(26,108,255,0.15)'};
+    border:1px solid ${color === 'green' ? 'rgba(0,229,160,0.4)' : 'rgba(26,108,255,0.4)'};
+    color:${color === 'green' ? '#00e5a0' : '#4d9fff'};
+    padding:14px 20px;border-radius:12px;font-size:0.88rem;font-weight:600;
+    max-width:320px;backdrop-filter:blur(12px);
+    animation:fadeUp 0.3s ease;font-family:'DM Sans',sans-serif;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  `;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+// ── COUNTER ANIMATION ──
+function animateCounters(elements) {
+  elements.forEach(el => {
+    const target = parseInt(el.getAttribute('data-count'));
+    if (!target) return;
+    let start = 0;
+    const duration = 2000;
+    const step = (timestamp) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target) + (target >= 1000 ? '+' : '+');
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target + '+';
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+// ── SCROLL REVEAL + COUNTER TRIGGER ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Trigger counters when impact section visible
+      const counters = entry.target.querySelectorAll('[data-count]');
+      if (counters.length) animateCounters(counters);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Trigger hero counters immediately
+setTimeout(() => {
+  animateCounters(document.querySelectorAll('.hero-stats [data-count]'));
+}, 800);
+
+// ── BUILD CHARTS (Analytics) ──
+function buildCharts() {
+  // Bar chart - weekly tasks
+  const weeks = ['W1','W2','W3','W4','W5','W6','W7'];
+  const vals = [45,62,58,80,74,95,110];
+  const barChart = document.getElementById('barChart');
+  if (barChart && !barChart.dataset.built) {
+    barChart.dataset.built = '1';
+    barChart.innerHTML = '';
+    const maxV = Math.max(...vals);
+    weeks.forEach((w, i) => {
+      const col = document.createElement('div');
+      col.className = 'bar-col';
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      const pct = (vals[i] / maxV) * 90;
+      bar.style.cssText = `width:100%;height:0;background:linear-gradient(to top,#1a6cff,#00e5a0);transition:height 0.8s ease ${i*0.08}s`;
+      const lbl = document.createElement('div');
+      lbl.className = 'bar-label';
+      lbl.textContent = w;
+      col.appendChild(bar);
+      col.appendChild(lbl);
+      barChart.appendChild(col);
+      setTimeout(() => { bar.style.height = pct + 'px'; }, 100);
+    });
+  }
+  // Trust score chart
+  const trustRanges = ['<50','50-60','60-70','70-80','80-90','90+'];
+  const trustVals = [5, 12, 28, 48, 62, 38];
+  const trustChart = document.getElementById('trustChart');
+  if (trustChart && !trustChart.dataset.built) {
+    trustChart.dataset.built = '1';
+    trustChart.innerHTML = '';
+    const maxT = Math.max(...trustVals);
+    trustRanges.forEach((r, i) => {
+      const col = document.createElement('div');
+      col.className = 'bar-col';
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      const pct = (trustVals[i] / maxT) * 90;
+      const hue = 120 + i * 20;
+      bar.style.cssText = `width:100%;height:0;background:hsl(${hue},70%,55%);transition:height 0.8s ease ${i*0.08}s;border-radius:4px 4px 0 0`;
+      const lbl = document.createElement('div');
+      lbl.className = 'bar-label';
+      lbl.textContent = r;
+      col.appendChild(bar);
+      col.appendChild(lbl);
+      trustChart.appendChild(col);
+      setTimeout(() => { bar.style.height = pct + 'px'; }, 200);
+    });
+  }
+}
+</script>
+</body>
+</html>
